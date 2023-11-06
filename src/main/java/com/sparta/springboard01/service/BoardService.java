@@ -12,6 +12,6 @@ public interface BoardService {
     void remove(Long bno);
     BoardResponseDTO readOne(Long bno);
     List<BoardResponseDTO> readAll();
-    boolean checkPassword(Long bno, BoardRequestDTO boardRequestDTO);
+    boolean checkPassword(Long bno, String password);
 
 }

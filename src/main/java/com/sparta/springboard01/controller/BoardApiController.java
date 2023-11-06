@@ -32,7 +32,7 @@ public class BoardApiController {
 
     //단일 건 조회
     @GetMapping("/read/{bno}")
-    public ResponseEntity list(@PathVariable("bno") Long bno) {
+    public ResponseEntity<Map<String, Object>> list(@PathVariable("bno") Long bno) {
         Map<String, Object> map = new HashMap<>();
 
         try {
@@ -51,38 +51,48 @@ public class BoardApiController {
     public ResponseEntity<Map<String, Object>> register(@RequestBody BoardRegisterDTO boardRegisterDTO) {
         Map<String, Object> map = new HashMap<>();
 
-        BoardResponseDTO boardResponseDTO = boardService.register(boardRegisterDTO);
-        map.put("board", boardResponseDTO);
-        return ResponseEntity.ok(map);
+        try {
+            BoardResponseDTO boardResponseDTO = boardService.register(boardRegisterDTO);
+            map.put("board", boardResponseDTO);
+            return ResponseEntity.ok(map);
+        } catch (Exception e) {
+            map.put("Error", "잘못된 양식입니다.");
+            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     //게시글 수정
     @PatchMapping("/modify/{bno}")
     public ResponseEntity<Map<String, Object>> modify(@PathVariable("bno") Long bno, @RequestBody BoardRequestDTO boardRequestDTO) {
         Map<String, Object> map = new HashMap<>();
-        boolean isEqual = boardService.checkPassword(bno, boardRequestDTO);
-        log.info(isEqual);
+        String password = boardRequestDTO.getPassword();
+        boolean isEqual = boardService.checkPassword(bno, password);
+
         if(isEqual) {
             BoardResponseDTO boardResponseDTO = boardService.modify(bno, boardRequestDTO);
             map.put("updated board", boardResponseDTO);
             return ResponseEntity.ok(map);
         } else {
             map.put("Error", "비밀번호가 일치하지 않습니다.");
-            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
         }
     }
 
+    //게시글 삭제
+    //비밀번호만 따로 받기.
     @DeleteMapping("/delete/{bno}")
-    public ResponseEntity<Map<String, Object>> remove(@PathVariable("bno") Long bno, @RequestBody BoardRequestDTO boardRequestDTO) {
+    public ResponseEntity<Map<String, Object>> remove(@PathVariable("bno") Long bno, @RequestBody String password) {
         Map<String, Object> map = new HashMap<>();
-        boolean isEqual = boardService.checkPassword(bno, boardRequestDTO);
+        boolean isEqual = boardService.checkPassword(bno, password);
+
         if(isEqual) {
             boardService.remove(bno);
             map.put("Success", "삭제가 성공적으로 완료되었습니다.");
             return ResponseEntity.ok(map);
         } else {
             map.put("Error", "비밀번호가 일치하지 않습니다.");
-            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
         }
     }
 
