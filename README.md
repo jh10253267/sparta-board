@@ -41,7 +41,7 @@ api서버를 만들어보며 실습.
 
 ## 다이어그램
 
-![ERD](./document/board-erd.png)<br>
+![ERD](./document/ERD.drawio.jpg)<br>
 ![use-case](./document/board-usecase.svg)
 
 ## API명세
