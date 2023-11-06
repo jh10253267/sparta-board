@@ -14,5 +14,4 @@ public class BoardRegisterDTO {
     private String writer;
     private String password;
     private LocalDateTime regDate;
-    private LocalDateTime modDate;
 }

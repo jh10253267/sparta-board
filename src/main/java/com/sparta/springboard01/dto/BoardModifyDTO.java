@@ -11,12 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardRequestDTO {
-    private Long bno;
+public class BoardModifyDTO {
     private String title;
     private String content;
     private String writer;
     private String password;
-    private LocalDateTime regDate;
-    private LocalDateTime modDate;
 }

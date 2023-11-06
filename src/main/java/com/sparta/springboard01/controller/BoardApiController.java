@@ -1,7 +1,8 @@
 package com.sparta.springboard01.controller;
 
+import com.sparta.springboard01.dto.BoardPassword;
 import com.sparta.springboard01.dto.BoardRegisterDTO;
-import com.sparta.springboard01.dto.BoardRequestDTO;
+import com.sparta.springboard01.dto.BoardModifyDTO;
 import com.sparta.springboard01.dto.BoardResponseDTO;
 import com.sparta.springboard01.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,12 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/boards")
 @Log4j2
 public class BoardApiController {
     private final BoardService boardService;
 
-    @GetMapping("/read")
+    @GetMapping("/")
     public Map<String, Object> listAll() {
         Map<String, Object> map = new HashMap<>();
         List<BoardResponseDTO> boards = boardService.readAll();
@@ -31,7 +32,7 @@ public class BoardApiController {
     }
 
     //단일 건 조회
-    @GetMapping("/read/{bno}")
+    @GetMapping("/{bno}")
     public ResponseEntity<Map<String, Object>> list(@PathVariable("bno") Long bno) {
         Map<String, Object> map = new HashMap<>();
 
@@ -47,7 +48,7 @@ public class BoardApiController {
     }
 
     //게시글 작성
-    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> register(@RequestBody BoardRegisterDTO boardRegisterDTO) {
         Map<String, Object> map = new HashMap<>();
 
@@ -63,27 +64,33 @@ public class BoardApiController {
     }
 
     //게시글 수정
-    @PatchMapping("/modify/{bno}")
-    public ResponseEntity<Map<String, Object>> modify(@PathVariable("bno") Long bno, @RequestBody BoardRequestDTO boardRequestDTO) {
+    @PutMapping("/{bno}")
+    public ResponseEntity<Map<String, Object>> modify(@PathVariable("bno") Long bno, @RequestBody BoardModifyDTO boardRequestDTO) {
         Map<String, Object> map = new HashMap<>();
         String password = boardRequestDTO.getPassword();
-        boolean isEqual = boardService.checkPassword(bno, password);
+        try {
+            boolean isEqual = boardService.checkPassword(bno, password);
 
-        if(isEqual) {
-            BoardResponseDTO boardResponseDTO = boardService.modify(bno, boardRequestDTO);
-            map.put("updated board", boardResponseDTO);
-            return ResponseEntity.ok(map);
-        } else {
-            map.put("Error", "비밀번호가 일치하지 않습니다.");
-            return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
+            if (isEqual) {
+                BoardResponseDTO boardResponseDTO = boardService.modify(bno, boardRequestDTO);
+                map.put("updated board", boardResponseDTO);
+                return ResponseEntity.ok(map);
+            } else {
+                map.put("Error", "비밀번호가 일치하지 않습니다.");
+                return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            map.put("Error", "존재하지 않는 게시물입니다.");
+            return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
         }
     }
 
     //게시글 삭제
     //비밀번호만 따로 받기.
-    @DeleteMapping("/delete/{bno}")
-    public ResponseEntity<Map<String, Object>> remove(@PathVariable("bno") Long bno, @RequestBody String password) {
+    @DeleteMapping("/{bno}")
+    public ResponseEntity<Map<String, Object>> remove(@PathVariable("bno") Long bno, @RequestBody BoardPassword boardPassword) {
         Map<String, Object> map = new HashMap<>();
+        String password = boardPassword.getPassword();
         boolean isEqual = boardService.checkPassword(bno, password);
 
         if(isEqual) {
