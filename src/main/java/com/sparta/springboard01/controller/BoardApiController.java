@@ -39,7 +39,7 @@ public class BoardApiController {
         try {
             BoardResponseDTO boardResponseDTO = boardService.readOne(bno);
             map.put("board", boardResponseDTO);
-        } catch(Exception e) {
+        } catch (Exception e) {
             map.put("Error", "해당 게시물은 존재하지 않습니다.");
             return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
         }
@@ -93,7 +93,7 @@ public class BoardApiController {
         String password = boardPassword.getPassword();
         boolean isEqual = boardService.checkPassword(bno, password);
 
-        if(isEqual) {
+        if (isEqual) {
             boardService.remove(bno);
             map.put("Success", "삭제가 성공적으로 완료되었습니다.");
             return ResponseEntity.ok(map);

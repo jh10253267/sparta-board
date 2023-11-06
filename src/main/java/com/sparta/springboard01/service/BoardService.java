@@ -8,10 +8,15 @@ import java.util.List;
 
 public interface BoardService {
     BoardResponseDTO register(BoardRegisterDTO boardRegisterDTO);
+
     BoardResponseDTO modify(Long bno, BoardModifyDTO boardRequestDTO);
+
     void remove(Long bno);
+
     BoardResponseDTO readOne(Long bno);
+
     List<BoardResponseDTO> readAll();
+
     boolean checkPassword(Long bno, String password);
 
 }

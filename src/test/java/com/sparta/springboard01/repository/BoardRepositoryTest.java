@@ -10,12 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-
-/**
- * - 선택한 게시글의 `제목`, `작성자명`, `작성 내용`을 수정할 수 있습니다.
- *     - 서버에 게시글 수정을 요청할 때 `비밀번호`를 함께 전달합니다.
- *     - 선택한 게시글의 `비밀번호`와 요청할 때 함께 보낸 `비밀번호`가 일치할 경우에만 수정이 가능합니다.
- */
 @SpringBootTest
 @Log4j2
 class BoardRepositoryTest {
@@ -28,7 +22,7 @@ class BoardRepositoryTest {
             Board board = Board.builder()
                     .title("title..." + i)
                     .content("content..." + i)
-                    .writer("user" + (i%10))
+                    .writer("user" + (i % 10))
                     .password("password" + i)
                     .build();
 

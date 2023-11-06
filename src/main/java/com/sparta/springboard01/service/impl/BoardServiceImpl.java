@@ -25,7 +25,6 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
 
 
-
     @Override
     public BoardResponseDTO register(BoardRegisterDTO boardRegisterDTO) {
         Board board = modelMapper.map(boardRegisterDTO, Board.class);
@@ -81,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
         Optional<Board> result = boardRepository.findById(bno);
         Board board = result.orElseThrow();
 
-        if(board.getPassword().equals(password)) {
+        if (board.getPassword().equals(password)) {
             return true;
         } else {
             return false;
